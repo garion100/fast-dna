@@ -9,6 +9,7 @@ import {
 import {
     accent,
     background800,
+    defaultColor,
     disabledOpacity,
     error,
     foreground200,
@@ -267,6 +268,11 @@ export function applyAriaHiddenStyles(): CSSRules<{}> {
         },
     };
 }
+
+export const defaultFont: CSSRules<{}> = {
+    color: defaultColor,
+    "font-style": "italic",
+};
 
 export function applyRemoveItemStyle(): CSSRules<{}> {
     return {

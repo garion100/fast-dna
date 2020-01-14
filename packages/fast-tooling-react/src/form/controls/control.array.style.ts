@@ -7,6 +7,7 @@ import {
     applyLabelRegionStyle,
     applyLabelStyle,
     applyRemoveItemStyle,
+    defaultFont,
 } from "../../style";
 
 /**
@@ -103,10 +104,12 @@ const styles: ComponentStyles<ArrayControlClassNameContract, {}> = {
         width: "calc(100% - 40px)",
         padding: "0 5px",
         "background-color": "rgba(255, 255, 255, 0.04)",
+        "&$arrayControl_existingItemListItemLink__default": {
+            ...defaultFont,
+            cursor: "auto",
+        },
     },
-    arrayControl_existingItemListItemLink__default: {
-        cursor: "auto",
-    },
+    arrayControl_existingItemListItemLink__default: {},
     arrayControl_existingItemRemoveButton: {
         ...applyRemoveItemStyle(),
         cursor: "pointer",

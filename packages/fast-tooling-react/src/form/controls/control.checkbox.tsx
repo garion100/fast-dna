@@ -4,6 +4,7 @@ import { ManagedClasses } from "@microsoft/fast-components-class-name-contracts-
 import styles, { CheckboxControlClassNameContract } from "./control.checkbox.style";
 import { CheckboxControlProps } from "./control.checkbox.props";
 import { classNames } from "@microsoft/fast-web-utilities";
+import { isDefault } from "../utilities";
 
 /**
  * Form control definition
@@ -31,10 +32,17 @@ class CheckboxControl extends React.Component<
 
         return (
             <input
-                className={classNames(this.props.managedClasses.checkboxControl, [
-                    this.props.managedClasses.checkboxControl__disabled,
-                    this.props.disabled,
-                ])}
+                className={classNames(
+                    this.props.managedClasses.checkboxControl,
+                    [
+                        this.props.managedClasses.checkboxControl__disabled,
+                        this.props.disabled,
+                    ],
+                    [
+                        this.props.managedClasses.checkboxControl__default,
+                        isDefault<boolean>(this.props.value, this.props.default),
+                    ]
+                )}
                 id={this.props.dataLocation}
                 type={"checkbox"}
                 value={value.toString()}
