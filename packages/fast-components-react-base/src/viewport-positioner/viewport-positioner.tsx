@@ -132,6 +132,7 @@ class ViewportPositioner extends Foundation<
         horizontalLockToDefault: false,
         fixedAfterInitialPlacement: false,
         scaleToFit: false,
+        delayContentInstanciation: false,
         managedClasses: {},
     };
 
@@ -235,7 +236,11 @@ class ViewportPositioner extends Foundation<
                 className={this.generateClassNames()}
                 style={this.getPositioningStyles()}
             >
-                {this.props.children}
+                {!this.props.disabled &&
+                !this.state.initialLayoutComplete &&
+                this.props.delayContentInstanciation
+                    ? null
+                    : this.props.children}
             </div>
         );
     }
@@ -402,9 +407,10 @@ class ViewportPositioner extends Foundation<
         this.collisionDetector.observe(anchorElement);
 
         this.resizeDetector = new (window as WindowWithResizeObserver).ResizeObserver(
-            this.handleAnchorResize
+            this.handleResize
         );
         this.resizeDetector.observe(anchorElement);
+        this.resizeDetector.observe(this.rootElement.current);
 
         viewportElement.addEventListener("scroll", this.handleScroll);
     };
@@ -577,10 +583,38 @@ class ViewportPositioner extends Foundation<
     };
 
     /**
+     *  Handle resize events
+     */
+    private handleResize = (entries: ResizeObserverEntry[]): void => {
+        entries.forEach((entry: ResizeObserverEntry) => {
+            if (entry.target === this.rootElement.current) {
+                this.handlePositionerResize(entry);
+            } else {
+                this.handleAnchorResize(entry);
+            }
+        });
+    };
+
+    /**
+     *  Handle positioner resize events
+     */
+    private handlePositionerResize = (entry: ResizeObserverEntry): void => {
+        if (this.props.scaleToFit) {
+            return;
+        }
+        this.positionerRect = new DOMRect(
+            entry.contentRect.left,
+            entry.contentRect.top,
+            entry.contentRect.width,
+            entry.contentRect.height
+        );
+        this.requestFrame();
+    };
+
+    /**
      *  Handle anchor resize events
      */
-    private handleAnchorResize = (entries: ResizeObserverEntry[]): void => {
-        const entry: ResizeObserverEntry = entries[0];
+    private handleAnchorResize = (entry: ResizeObserverEntry): void => {
         this.anchorHeight = entry.contentRect.height;
         this.anchorWidth = entry.contentRect.width;
 
