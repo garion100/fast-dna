@@ -21,13 +21,16 @@ import {
 import { isFunction } from "util";
 
 export interface StackPanelState {
-    disabled: boolean;
     isScrolling: boolean;
     renderedRangeStartIndex: number;
     renderedRangeEndIndex: number;
     direction: Direction;
 }
 
+/**
+ * Used to store the pixel coordinates and span of items
+ * along the stackpanel's axis
+ */
 interface ItemPosition {
     start: number;
     span: number;
@@ -118,7 +121,6 @@ class StackPanel extends Foundation<
         this.updateItemPositions();
 
         this.state = {
-            disabled: false,
             renderedRangeStartIndex: 0,
             renderedRangeEndIndex: 0,
             direction: Direction.ltr,
@@ -137,7 +139,6 @@ class StackPanel extends Foundation<
         return (
             <div
                 {...this.unhandledProps()}
-                tabIndex={-1}
                 ref={this.rootElement}
                 className={this.generateClassNames()}
                 onScrollCapture={this.onScrollCapture}
@@ -145,7 +146,6 @@ class StackPanel extends Foundation<
                 <div
                     className={classNames(stackPanel_itemContainer)}
                     ref={this.itemContainerElement}
-                    tabIndex={-1}
                     style={{
                         position: "relative",
                         ...(this.props.orientation === stackPanelOrientation.horizontal
